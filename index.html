@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Athlete Fuel Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #1e293b; /* Slate 800 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background-color: #2563eb; /* Blue 600 */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8; /* Blue 700 */
+        }
+        .btn-outline {
+            border: 2px solid #2563eb;
+            color: #2563eb;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            background-color: white;
+            transition: all 0.2s;
+        }
+        .btn-outline:hover, .btn-outline.active {
+            background-color: #2563eb;
+            color: white;
+        }
+        .highlight-text {
+            color: #f97316; /* Orange 500 */
+            font-weight: bold;
+        }
+        .season-btn {
+            border: 2px solid #e2e8f0;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+        .season-btn:hover {
+            border-color: #cbd5e1;
+        }
+        .season-btn.active {
+            background-color: #eff6ff;
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation / Header -->
+    <nav class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <!-- Updated Branding -->
+                    <span class="text-2xl mr-2">⚡</span>
+                    <span class="font-bold text-xl tracking-tight text-white">College Athlete Fuel Hub</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#calculator" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700">The Lab</a>
+                        <a href="#groceries" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700">Grocery Lists</a>
+                        <a href="#plate" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700">Plate Builder</a>
+                        <a href="#mindset" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700">Mindset</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl font-extrabold text-slate-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
+                High Performance on a <span class="text-blue-600">Student Budget</span>
+            </h1>
+            <p class="mt-5 max-w-xl mx-auto text-xl text-slate-500">
+                Talent is not enough. You need fuel. Bridge the gap between sports nutrition science and your bank account with this interactive guide.
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- PART 1: The Fuel Lab (Calculator) -->
+        <section id="calculator" class="scroll-mt-20">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-slate-900">🧮 Part 1: The Fuel Lab (TDEE Calculator)</h2>
+                <p class="mt-2 text-slate-600">Input your full stats to get a precision calorie and macro breakdown.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Input Panel -->
+                <div class="card lg:col-span-1 bg-slate-50 border border-slate-200">
+                    <h3 class="text-xl font-bold mb-4 text-slate-800">Your Stats</h3>
+                    <div class="space-y-4">
+                        <!-- Basic Stats -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase">Gender</label>
+                                <select id="gender" class="w-full mt-1 rounded-md border-gray-300 py-2 text-sm" onchange="updateCalculator()">
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase">Age</label>
+                                <input type="number" id="age" class="w-full mt-1 rounded-md border-gray-300 py-2 text-sm pl-2" value="20" oninput="updateCalculator()">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase">Bodyweight (lbs)</label>
+                            <input type="number" id="weight" class="w-full mt-1 rounded-md border-gray-300 py-2 pl-2 text-lg font-bold text-blue-600" value="180" oninput="updateCalculator()">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase">Height (Ft)</label>
+                                <input type="number" id="height-ft" class="w-full mt-1 rounded-md border-gray-300 py-2 pl-2" value="5" oninput="updateCalculator()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase">Height (In)</label>
+                                <input type="number" id="height-in" class="w-full mt-1 rounded-md border-gray-300 py-2 pl-2" value="10" oninput="updateCalculator()">
+                            </div>
+                        </div>
+
+                        <!-- Activity Levels -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Daily Activity (School/Work)</label>
+                            <select id="daily-activity" class="w-full rounded-md border-gray-300 py-2 text-sm" onchange="updateCalculator()">
+                                <option value="1.2">Sedentary (Desk Job/Student)</option>
+                                <option value="1.375">Light Active (Walking/Standing)</option>
+                                <option value="1.55">Active (Physical Job)</option>
+                            </select>
+                        </div>
+                         <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Training Frequency</label>
+                            <select id="training-freq" class="w-full rounded-md border-gray-300 py-2 text-sm" onchange="updateCalculator()">
+                                <option value="0">Rest / Injured (0 days)</option>
+                                <option value="0.1">Light Training (1-2 days)</option>
+                                <option value="0.2">Moderate Training (3-5 days)</option>
+                                <option value="0.3">Heavy Training (6-7 days)</option>
+                                <option value="0.4">Two-a-Days / Elite</option>
+                            </select>
+                        </div>
+
+                        <!-- Season Selector -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Periodization Phase</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button id="btn-pre" class="season-btn active" onclick="setSeason('pre')">Pre-Season</button>
+                                <button id="btn-in" class="season-btn" onclick="setSeason('in')">In-Season</button>
+                                <button id="btn-post" class="season-btn" onclick="setSeason('post')">Post-Season</button>
+                                <button id="btn-off" class="season-btn" onclick="setSeason('off')">Off-Season</button>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2 italic" id="season-desc">High volume. Focus on Carb loading.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="flex justify-between items-center">
+                             <h4 class="font-bold text-blue-800 text-sm uppercase">Hydration Goal</h4>
+                             <span class="text-xs text-blue-400">1/2 Bodyweight Rule</span>
+                        </div>
+                        <p class="text-3xl font-extrabold text-blue-600 mt-1"><span id="water-oz">90</span> <span class="text-lg font-normal text-blue-500">oz</span></p>
+                    </div>
+                </div>
+
+                <!-- Results & Chart -->
+                <div class="card lg:col-span-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
+                        <!-- Numeric Results -->
+                        <div class="flex flex-col justify-center space-y-4">
+                            <div class="bg-slate-100 p-4 rounded-lg border-l-4 border-slate-500 mb-2">
+                                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wide">Estimated TDEE</h4>
+                                <div class="flex items-baseline">
+                                    <span class="text-4xl font-extrabold text-slate-900" id="tdee-val">2800</span>
+                                    <span class="ml-2 text-sm text-slate-500">kcal/day</span>
+                                </div>
+                                <p class="text-xs text-slate-400 mt-1">Based on Harris-Benedict Equation</p>
+                            </div>
+
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wide">Protein (Repair)</h4>
+                                <div class="flex items-baseline">
+                                    <span class="text-2xl font-bold text-slate-900" id="protein-range">180</span>
+                                    <span class="ml-2 text-sm text-slate-500">g</span>
+                                </div>
+                                <p class="text-xs text-slate-400">1.0g per lb (Target)</p>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wide">Fats (Hormones)</h4>
+                                <div class="flex items-baseline">
+                                    <span class="text-2xl font-bold text-slate-900" id="fat-range">80</span>
+                                    <span class="ml-2 text-sm text-slate-500">g</span>
+                                </div>
+                                <p class="text-xs text-slate-400">~0.4g per lb (Min threshold)</p>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wide">Carbs (Energy)</h4>
+                                <div class="flex items-baseline">
+                                    <span class="text-2xl font-bold text-orange-600 highlight-text" id="carb-range">340</span>
+                                    <span class="ml-2 text-sm text-slate-500">g</span>
+                                </div>
+                                <p class="text-xs text-slate-400">Fills remaining energy needs</p>
+                            </div>
+                        </div>
+
+                        <!-- Visualization -->
+                        <div class="flex flex-col items-center justify-center">
+                            <h4 class="text-sm font-bold text-slate-400 mb-4">Daily Calorie Budget</h4>
+                            <div class="chart-container" style="height: 250px;">
+                                <canvas id="macroChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-200">
+
+        <!-- PART 2: Grocery Lists -->
+        <section id="groceries" class="scroll-mt-20">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-slate-900">🛒 Part 2: The Grocery Game Plan</h2>
+                <p class="mt-2 text-slate-600">Maximize price-to-nutrient density based on your budget and location.</p>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex flex-col md:flex-row justify-center gap-4 mb-8">
+                <div class="w-full md:w-64">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Budget Tier</label>
+                    <select id="budget-select" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" onchange="updateGroceryList()">
+                        <option value="survival">📉 Survival Mode ($50-$60)</option>
+                        <option value="performance">📈 Performance Optimized ($100-$120)</option>
+                    </select>
+                </div>
+                <div class="w-full md:w-64">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Store Preference</label>
+                    <select id="store-select" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" onchange="updateGroceryList()">
+                        <!-- Options populated by JS based on Budget -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Grocery Display -->
+            <div class="card bg-white border border-slate-200 shadow-xl overflow-hidden">
+                <div class="bg-slate-900 px-6 py-4 flex justify-between items-center">
+                    <h3 class="text-white font-bold text-lg" id="list-title">Walmart Volume Haul</h3>
+                    <span class="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full" id="list-cost">~$55.00</span>
+                </div>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Protein Col -->
+                    <div>
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 mr-3 text-lg">🥩</div>
+                            <h4 class="font-bold text-slate-800">Protein</h4>
+                        </div>
+                        <ul class="space-y-3 text-sm text-slate-600" id="protein-list">
+                            <!-- Items -->
+                        </ul>
+                    </div>
+                    <!-- Carb Col -->
+                    <div>
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 mr-3 text-lg">🌾</div>
+                            <h4 class="font-bold text-slate-800">Carbs</h4>
+                        </div>
+                        <ul class="space-y-3 text-sm text-slate-600" id="carb-list">
+                            <!-- Items -->
+                        </ul>
+                    </div>
+                    <!-- Fats/Veg/Supps Col -->
+                    <div>
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 mr-3 text-lg">🥑</div>
+                            <h4 class="font-bold text-slate-800">Fats, Veg & Extras</h4>
+                        </div>
+                        <ul class="space-y-3 text-sm text-slate-600" id="other-list">
+                            <!-- Items -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-200">
+
+        <!-- PART 3: Plate Builder -->
+        <section id="plate" class="scroll-mt-20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Visualizer -->
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">🍽 Part 3: Visualizing Your Plate</h2>
+                    <p class="text-slate-600 mb-6">Meal timing determines composition. Don't have a scale? Use the visual guide.</p>
+                    
+                    <div class="flex space-x-2 mb-6">
+                        <button class="btn-primary flex-1 text-sm" onclick="setPlate('pre')" id="plate-btn-pre">Pre-Workout</button>
+                        <button class="btn-outline flex-1 text-sm" onclick="setPlate('post')" id="plate-btn-post">Post-Workout</button>
+                        <button class="btn-outline flex-1 text-sm" onclick="setPlate('rest')" id="plate-btn-rest">Rest Days</button>
+                    </div>
+
+                    <div class="card bg-white flex flex-col items-center">
+                        <h3 class="text-lg font-bold text-slate-800 mb-2" id="plate-title">Pre-Workout Fuel</h3>
+                        <p class="text-sm text-slate-500 mb-4 text-center italic" id="plate-desc">Focus on Carbs + Protein (Low Fat). Ex: Oatmeal + Protein Powder.</p>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="plateChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reference Table -->
+                <div class="flex flex-col justify-center">
+                    <div class="bg-blue-900 rounded-xl shadow-lg p-6 text-white">
+                        <h3 class="text-xl font-bold mb-6 border-b border-blue-700 pb-2">The Hand Portion Method</h3>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="flex items-start">
+                                <span class="text-4xl mr-3">✋</span>
+                                <div>
+                                    <h4 class="font-bold text-blue-300 uppercase text-xs tracking-wider">Protein</h4>
+                                    <p class="font-bold text-lg">1-2 Palms</p>
+                                    <p class="text-sm text-blue-200">Chicken, Beef, Eggs, Greek Yogurt</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <span class="text-4xl mr-3">👐</span>
+                                <div>
+                                    <h4 class="font-bold text-yellow-300 uppercase text-xs tracking-wider">Carbs</h4>
+                                    <p class="font-bold text-lg">1-2 Cupped Hands</p>
+                                    <p class="text-sm text-blue-200">Rice, Potatoes, Oats, Fruit</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <span class="text-4xl mr-3">✊</span>
+                                <div>
+                                    <h4 class="font-bold text-green-300 uppercase text-xs tracking-wider">Veggies</h4>
+                                    <p class="font-bold text-lg">1-2 Fists</p>
+                                    <p class="text-sm text-blue-200">Broccoli, Spinach, Peppers</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <span class="text-4xl mr-3">👍</span>
+                                <div>
+                                    <h4 class="font-bold text-orange-300 uppercase text-xs tracking-wider">Fats</h4>
+                                    <p class="font-bold text-lg">1-2 Thumbs</p>
+                                    <p class="text-sm text-blue-200">Peanut Butter, Oil, Nuts, Avocado</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PART 4: Mindset -->
+        <section id="mindset" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6 text-center">🧠 The Mindset Checklist</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card border-l-4 border-blue-600">
+                    <h3 class="font-bold text-xl text-slate-800 mb-2">1. Preparation</h3>
+                    <p class="text-slate-600">Cook your rice and chicken in bulk twice a week. If you don't prep, you will resort to fast food.</p>
+                </div>
+                <div class="card border-l-4 border-orange-500">
+                    <h3 class="font-bold text-xl text-slate-800 mb-2">2. Digestion</h3>
+                    <p class="text-slate-600">Chew your food. Digestion starts in the mouth. Gulping food leads to bloating and poor nutrient absorption.</p>
+                </div>
+                <div class="card border-l-4 border-slate-700">
+                    <h3 class="font-bold text-xl text-slate-800 mb-2">3. Consistency</h3>
+                    <p class="text-slate-600">One "perfect" meal doesn't make an athlete. Consistency over the semester does.</p>
+                </div>
+            </div>
+            <div class="mt-8 text-center">
+                <p class="text-xl font-bold text-slate-400 italic">"You can't out-train a diet that doesn't support your energy systems."</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Updated Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="font-medium text-lg text-slate-200">Made by Bacon Dao, NCI Level 1 Nutrition Coaching Certified</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Data ---
+        const groceryData = {
+            survival: {
+                walmart: {
+                    title: "Walmart (The Volume Haul)",
+                    cost: "~$55.00",
+                    protein: ["Great Value Frozen Chicken Thighs (3lb bag)", "3 dozen Large Eggs", "4 cans Tuna"],
+                    carbs: ["5lb bag White Rice", "Old Fashioned Oats (large tub)", "5lb Russet Potatoes", "2 bunches Bananas"],
+                    other: ["Peanut Butter (large jar)", "2 bags Frozen Broccoli"]
+                },
+                aldi: {
+                    title: "Aldi (The Efficiency Haul)",
+                    cost: "~$52.00",
+                    protein: ["Family Pack Fresh Chicken Thighs (~5lb)", "2 dozen Eggs", "2lb Ground Beef (80/20)"],
+                    carbs: ["5lb Jasmine Rice", "Bag of Sweet Potatoes", "Box of Oats", "2 bunches Bananas"],
+                    other: ["Bag of Spinach", "Frozen Mixed Veggies", "Peanut Butter"]
+                },
+                dillons: {
+                    title: "Dillons/Kroger (Manager's Special)",
+                    cost: "~$58.00",
+                    protein: ["1 Rotisserie Chicken", "2 dozen Eggs", "1lb Ground Turkey"],
+                    carbs: ["Kroger Brand Pasta (2 boxes)", "5lb Potatoes", "Apples", "Bananas"],
+                    other: ["Plain Greek Yogurt (Tub)", "Frozen '99¢' Veggies"]
+                }
+            },
+            performance: {
+                walmart: {
+                    title: "Walmart (The Complete Haul)",
+                    cost: "~$118.00",
+                    protein: ["2 bags Frozen Chicken Thighs (6lbs total)", "5 dozen Eggs", "2lb Ground Beef", "1 Whole Young Chicken"],
+                    carbs: ["10lb Rice", "Oats", "Potatoes", "Bananas", "Pasta"],
+                    other: ["Equate Whey Protein Powder (~$22)", "Six Star Creatine Monohydrate (~$15)", "Peanut Butter & Olive Oil", "3 bags Frozen Mixed Veggies & Spinach"]
+                },
+                aldi: {
+                    title: "Aldi (The Quality Haul)",
+                    cost: "~$112.00",
+                    protein: ["3 Family Packs Chicken Thighs", "3 dozen Eggs", "2lb Lean Ground Beef", "Whole Chicken"],
+                    carbs: ["Jasmine Rice", "Sweet Potatoes", "Pasta", "Oats", "Bananas", "Berries (Frozen)"],
+                    other: ["Elevation Whey Protein Powder (~$20)", "Avocados (bag)", "Spinach", "Mixed Nuts"]
+                },
+                costco: {
+                    title: "Costco / Sam's Club (Bulk Foundation)",
+                    cost: "~$120.00 (Stocks 3-4 Weeks)",
+                    protein: ["Frozen Chicken Thighs (10lb bag) ~$22", "Bulk Whey Protein (5lb tub) ~$55"],
+                    carbs: ["Rice (25lb bag) ~$15"],
+                    other: ["Bulk Creatine Monohydrate ~$25", "Frozen Broccoli (4lb bag) ~$9"]
+                }
+            }
+        };
+
+        const plateConfigs = {
+            pre: {
+                title: "Pre-Workout Fuel",
+                desc: "Focus on Carbs + Protein (Low Fat). Ex: Oatmeal + Protein Powder.",
+                data: [45, 45, 10] // Carb, Protein, Fat
+            },
+            post: {
+                title: "Post-Workout Recovery",
+                desc: "Focus on Carbs + Protein. Ex: Rice + Chicken.",
+                data: [50, 40, 10]
+            },
+            rest: {
+                title: "Rest Days",
+                desc: "Increase Fats, Lower Carbs slightly. Ex: Eggs + Avocado + Fruit.",
+                data: [20, 30, 50] // Carb, Protein, Fat (High fat relative to training days)
+            }
+        };
+
+        // --- State ---
+        let currentSeason = 'pre';
+        let macroChartInstance = null;
+        let plateChartInstance = null;
+
+        const commonTooltip = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- Functions ---
+        function setSeason(season) {
+            currentSeason = season;
+            // Clear all active states
+            const btns = ['btn-pre', 'btn-in', 'btn-post', 'btn-off'];
+            btns.forEach(id => {
+                const b = document.getElementById(id);
+                b.classList.remove('active', 'bg-blue-600', 'text-white', 'border-blue-600');
+                b.classList.add('season-btn'); // reset to default class
+            });
+            
+            // Set active state
+            const activeBtn = document.getElementById(`btn-${season}`);
+            activeBtn.classList.add('active'); // active class handles colors via CSS
+            
+            const desc = document.getElementById('season-desc');
+            if(season === 'pre') desc.textContent = "High volume. Focus on Carb loading.";
+            if(season === 'in') desc.textContent = "Maintenance & Performance. Balanced high energy.";
+            if(season === 'post') desc.textContent = "Restoration. Recovering metabolism & tissues.";
+            if(season === 'off') desc.textContent = "Base building. Hypertrophy or body comp focus.";
+            
+            updateCalculator();
+        }
+
+        function updateCalculator() {
+            // Inputs
+            const gender = document.getElementById('gender').value;
+            const age = parseFloat(document.getElementById('age').value) || 20;
+            const weightLbs = parseFloat(document.getElementById('weight').value) || 180;
+            const heightFt = parseFloat(document.getElementById('height-ft').value) || 5;
+            const heightIn = parseFloat(document.getElementById('height-in').value) || 10;
+            const baseActivity = parseFloat(document.getElementById('daily-activity').value);
+            const trainingLoad = parseFloat(document.getElementById('training-freq').value);
+
+            // Conversions
+            const weightKg = weightLbs / 2.20462;
+            const heightCm = ((heightFt * 12) + heightIn) * 2.54;
+
+            // Harris-Benedict BMR
+            let bmr = 0;
+            if (gender === 'male') {
+                bmr = 88.362 + (13.397 * weightKg) + (4.799 * heightCm) - (5.677 * age);
+            } else {
+                bmr = 447.593 + (9.247 * weightKg) + (3.098 * heightCm) - (4.330 * age);
+            }
+
+            // Total Activity Factor
+            const totalActivity = baseActivity + trainingLoad;
+
+            // TDEE
+            let tdee = Math.round(bmr * totalActivity);
+            
+            // Season Adjustment
+            // Pre-season = Higher burn/need slightly more
+            // Off-season = Maintenance or slight surplus
+            // Post-season = Recovery (Maintenance or slight deficit if inactive)
+            if (currentSeason === 'pre') tdee = Math.round(tdee * 1.1); // +10% for intensity
+            
+            document.getElementById('tdee-val').textContent = tdee;
+            document.getElementById('water-oz').textContent = Math.round(weightLbs / 2);
+
+            // Macro Logic (Calories First, then Split)
+            // Protein: 1g per lb (Standard Athlete)
+            const proteinGrams = Math.round(weightLbs * 1.0); 
+            const proteinCals = proteinGrams * 4;
+
+            // Fat: ~0.4g per lb (Base for hormones) - higher in Post/Off season
+            let fatMult = 0.4;
+            if (currentSeason === 'post' || currentSeason === 'off') fatMult = 0.45;
+            const fatGrams = Math.round(weightLbs * fatMult);
+            const fatCals = fatGrams * 9;
+
+            // Carbs: The rest
+            let remainingCals = tdee - (proteinCals + fatCals);
+            // Safety check for low cal scenarios
+            if(remainingCals < 0) remainingCals = 0; 
+            const carbGrams = Math.round(remainingCals / 4);
+
+            document.getElementById('protein-range').textContent = proteinGrams;
+            document.getElementById('fat-range').textContent = fatGrams;
+            document.getElementById('carb-range').textContent = carbGrams;
+
+            updateMacroChart(proteinGrams, fatGrams, carbGrams);
+        }
+
+        function updateMacroChart(p, f, c) {
+            if (macroChartInstance) {
+                macroChartInstance.destroy();
+            }
+            const ctx = document.getElementById('macroChart').getContext('2d');
+            macroChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Protein (g)', 'Fats (g)', 'Carbs (g)'],
+                    datasets: [{
+                        data: [Math.round(p), Math.round(f), Math.round(c)],
+                        backgroundColor: ['#ef4444', '#f59e0b', '#22c55e'], // Red, Orange, Green
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: commonTooltip
+                    }
+                }
+            });
+        }
+
+        function updateGroceryList() {
+            const budget = document.getElementById('budget-select').value;
+            const storeSelect = document.getElementById('store-select');
+            
+            const currentStore = storeSelect.value;
+            storeSelect.innerHTML = ''; // Clear
+            
+            const stores = Object.keys(groceryData[budget]);
+            stores.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s;
+                let name = s.charAt(0).toUpperCase() + s.slice(1);
+                if(s === 'dillons') name = 'Dillons / Kroger';
+                if(s === 'costco') name = 'Costco / Sam\'s Club';
+                opt.textContent = name;
+                storeSelect.appendChild(opt);
+            });
+
+            if (stores.includes(currentStore)) {
+                storeSelect.value = currentStore;
+            }
+
+            const selectedStore = storeSelect.value;
+            const data = groceryData[budget][selectedStore];
+            
+            document.getElementById('list-title').textContent = data.title;
+            document.getElementById('list-cost').textContent = data.cost;
+            
+            const renderItems = (items, id) => {
+                const ul = document.getElementById(id);
+                ul.innerHTML = '';
+                items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = "flex items-start";
+                    li.innerHTML = `<span class="mr-2 text-slate-400">•</span> ${item}`;
+                    ul.appendChild(li);
+                });
+            };
+
+            renderItems(data.protein, 'protein-list');
+            renderItems(data.carbs, 'carb-list');
+            renderItems(data.other, 'other-list');
+        }
+
+        function setPlate(type) {
+            ['pre', 'post', 'rest'].forEach(t => {
+                const btn = document.getElementById(`plate-btn-${t}`);
+                if (t === type) {
+                    btn.classList.remove('btn-outline');
+                    btn.classList.add('btn-primary');
+                } else {
+                    btn.classList.add('btn-outline');
+                    btn.classList.remove('btn-primary');
+                }
+            });
+
+            const config = plateConfigs[type];
+            document.getElementById('plate-title').textContent = config.title;
+            document.getElementById('plate-desc').textContent = config.desc;
+
+            if (plateChartInstance) {
+                plateChartInstance.destroy();
+            }
+            const ctx = document.getElementById('plateChart').getContext('2d');
+            plateChartInstance = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Carbs', 'Protein', 'Fats/Veg'],
+                    datasets: [{
+                        data: config.data,
+                        backgroundColor: ['#fcd34d', '#f87171', '#4ade80'], // Yellow, Red, Green
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: commonTooltip
+                    }
+                }
+            });
+        }
+
+        // --- Init ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Calculator Init
+            setSeason('pre');
+            
+            // Grocery Init
+            updateGroceryList();
+
+            // Plate Init
+            setPlate('pre');
+        });
+
+    </script>
+</body>
+</html>
